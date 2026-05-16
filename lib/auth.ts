@@ -1,15 +1,15 @@
 import 'dotenv/config';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from '@better-auth/drizzle-adapter';
+import { passkey } from '@better-auth/passkey';
+import { admin } from 'better-auth/plugins/admin';
 import { db } from './db';
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   basePath: '/api/auth',
   secret: process.env.BETTER_AUTH_SECRET,
-  database: drizzleAdapter(db, {
-    provider: 'pg',
-  }),
+  database: drizzleAdapter(db, { provider: 'pg' }),
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -22,4 +22,5 @@ export const auth = betterAuth({
       redirectURI: 'http://localhost:3000/api/auth/callback/github',
     },
   },
+  plugins: [passkey(), admin()],
 });
